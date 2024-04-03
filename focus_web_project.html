@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Since August 8, 2004, 5:30 AM</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      margin: 50px;
+      background: url('wall.jpg') no-repeat center center fixed; 
+      background-size: cover;
+      color: white; 
+    }
+    #timer, #message {
+      font-size: 2em;
+    }
+    #stopwatch-container {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      text-align: right;
+      margin: 20px;
+      transition: all 1s ease;
+    }
+
+
+ 
+
+    #stopwatch, #stopwatch-buttons {
+      font-size: 1.5em;
+      display: inline-table;
+      color: #fff; 
+    }
+    #stopwatch-buttons button {
+      margin-left: 10px;
+      background-color: #5bc0de; 
+      color: #fff; 
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #stopwatch-buttons button:hover {
+      background-color: darkcyan; 
+    }
+
+    #todolist-container {
+      text-align: left;
+      position: fixed;
+      top: 0;
+      right: 0;
+      margin: 20px;
+      padding: 20px;
+      background: rgba(15, 15, 15, 0.5); 
+      border-radius: 10px;
+      max-width: 300px;
+      color: #333; 
+    }
+    #todolist {
+      list-style-type: none;
+      padding: 0;
+    }
+    #todolist li {
+      margin-bottom: 10px;
+      background: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); 
+    }
+    #todolist input {
+      margin-right: 10px;
+    }
+    #todolist input:checked + label {
+      text-decoration: line-through; 
+      color: #777; 
+    }
+    #todolist button {
+      background: #d9534f; 
+      color: #fff; 
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    #todolist button:hover {
+      background: #c9302c; 
+    }
+    #todolist input, #newTask, #todolist button {
+      margin-bottom: 5px;
+    }
+    #todolist input::placeholder {
+      color: #888; 
+    }
+    #todolist input:focus, #newTask:focus {
+      border: 2px solid #5bc0de;
+      outline: none;
+    }
+    #todolist button:focus {
+      outline: none;
+    }
+    #todolist-container h2 {
+      color: #5bc0de;
+    }
+    #message {
+      color: white;
+    }
+    #add-task-btn, #clear-all-btn {
+      background-color: #5bc0de; 
+      color: #fff; 
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+    #add-task-btn:hover, #clear-all-btn:hover {
+      background-color: #4cae4c; 
+    }
+    #quote-container {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    margin: 20px;
+    padding: 20px;
+    background: rgba(15, 15, 15, 0.5);
+    border-radius: 10px;
+    max-width: 300px;
+    color: #fff; 
+    border: 1px solid #ccc;
+    transition: all 0.5s ease;
+    }
+
+#quote-container:hover {
+  border-radius: 40%;
+  border-color: black;
+  color: lightseagreen;
+}
+
+
+
+    #quote-container button {
+    margin-top: 10px;
+    background-color: #5bc0de;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        #content {
+            flex: 1;
+        }
+
+        #welcome-message {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: lightskyblue;
+            font-size: 1.5em;
+        }
+
+
+  </style>
+</head>
+<body>
+
+<h1>Time Since August 8, 2004, 5:30 AM</h1>
+<div id="timer"></div>
+<div id="message">You wasted that much time.</div>
+
+<div id="stopwatch-container">
+  <h2>Stopwatch</h2>
+  <div id="stopwatch">0h 0m 0s</div>
+  <div id="stopwatch-buttons">
+    <button onclick="startStopwatch()">Start</button>
+    <button onclick="stopStopwatch()">Stop</button>
+    <button onclick="resetStopwatch()">Reset</button>
+  </div>
+</div>
+
+<div id="quote-container">
+    <h2>Todays Quote</h2>
+    <p id="quote-text"></p>
+    <p id="quote-author"></p>
+    <button onclick="fetchRandomQuote()">Get New Quote</button>
+</div>
+
+<div id="todolist-container">
+  <h2>To-Do List</h2>
+  <ul id="todolist">
+  </ul>
+  <div>
+    <input type="text" id="newTask" placeholder="New Task">
+    <button id="add-task-btn" onclick="addTask()">Add Task</button>
+    <button id="clear-all-btn" onclick="clearTasks()">Clear All</button>
+  </div>
+</div>
+
+<div id="welcome-message">
+  Welcome back,  Harikant Bajaj 
+</div>
+
+<div id="content">
+
+<script>
+  const targetDate = new Date('August 8, 2004 5:30:00 GMT+0000').getTime();
+  const interval = setInterval(updateCountdown, 1000);
+
+  function updateCountdown() {
+    const currentDate = new Date().getTime();
+    const timeDifference = currentDate - targetDate;
+
+    const years = Math.floor(timeDifference / (1000 * 60 * 60 * 24 * 365.25));
+    const months = Math.floor((timeDifference % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+    const days = Math.floor((timeDifference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+    document.getElementById('timer').innerHTML = `${years}y ${months}mo ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+    if (timeDifference < 0) {
+      clearInterval(interval);
+      document.getElementById('timer').innerHTML = 'Time has passed!';
+      document.getElementById('message').innerHTML = '';
+    }
+  }
+ 
+  let stopwatchInterval;
+  let stopwatchSeconds = 0;
+
+  function startStopwatch() {
+    stopwatchInterval = setInterval(updateStopwatch, 1000);
+  }
+
+  function stopStopwatch() {
+    clearInterval(stopwatchInterval);
+  }
+
+  function updateStopwatch() {
+    stopwatchSeconds++;
+    const hours = Math.floor(stopwatchSeconds / 3600);
+    const minutes = Math.floor((stopwatchSeconds % 3600) / 60);
+    const seconds = stopwatchSeconds % 60;
+
+    document.getElementById('stopwatch').innerHTML = `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  function resetStopwatch() {
+    clearInterval(stopwatchInterval);
+    stopwatchSeconds = 0;
+    document.getElementById('stopwatch').innerHTML = '0h 0m 0s';
+  }
+
+  // To-Do List
+  function addTask() {
+    const newTaskInput = document.getElementById('newTask');
+    const taskText = newTaskInput.value.trim();
+
+    if (taskText !== '') {
+      const todoList = document.getElementById('todolist');
+      const newTaskItem = document.createElement('li');
+      newTaskItem.innerHTML = `
+        <input type="checkbox" id="task-${Date.now()}">
+        <label for="task-${Date.now()}">${taskText}</label>
+        <button onclick="removeTask(this)">Delete</button>
+      `;
+      todoList.appendChild(newTaskItem);
+      newTaskInput.value = '';
+    }
+  }
+
+  function removeTask(button) {
+    const taskItem = button.parentElement;
+    taskItem.remove();
+  }
+
+  function clearTasks() {
+    const todoList = document.getElementById('todolist');
+    todoList.innerHTML = '';
+  }
+   function fetchRandomQuote() {
+    const quoteUrl = 'https://api.quotable.io/random';
+
+    fetch(quoteUrl)
+      .then(response => response.json())
+      .then(data => {
+        const quoteText = data.content;
+        const quoteAuthor = data.author;
+
+        const quoteTextElement = document.getElementById('quote-text');
+        const quoteAuthorElement = document.getElementById('quote-author');
+
+        quoteTextElement.textContent = `"${quoteText}"`;
+        quoteAuthorElement.textContent = `- ${quoteAuthor}`;
+      })
+      .catch(error => {
+        console.error('Error fetching quote:', error);
+        const quoteTextElement = document.getElementById('quote-text');
+        quoteTextElement.textContent = 'Failed to fetch a quote.';
+      });
+  }
+
+
+  fetchRandomQuote();
+</script>
+
+</body>
+</html>
